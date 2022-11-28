@@ -1,0 +1,14 @@
+<svg width="34" height="34" viewBox="0 0 34 34" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <style>
+        path {
+            stroke: black;
+        }
+        @media (prefers-color-scheme: dark) {
+            path {
+                stroke: white;
+            }
+    </style>
+    <path d="M30.1643 17.3862C31.9644 15.5861 32.9757 13.1446 32.9757 10.5988C32.9757 8.05305 31.9644 5.61156 30.1643 3.81143C28.3641 2.0113 25.9226 1 23.3769 1C20.8311 1 18.3896 2.0113 16.5895 3.81143L5.79681 14.6041V28.1949H19.3876L30.1643 17.3862Z" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+    <path d="M23.3848 10.6068L1 32.9916" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+    <path d="M25.7832 21.7992H12.1924" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+</svg>

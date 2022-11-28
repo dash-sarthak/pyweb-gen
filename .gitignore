@@ -1,5 +1,0 @@
-build/
-dist/
-pyweb_gen.egg-info/
-venv/
-main.py
