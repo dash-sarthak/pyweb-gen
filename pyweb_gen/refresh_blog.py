@@ -22,9 +22,11 @@ class RefreshBlog:
                 self.create_new_page(page)
 
     def _check_for_new_posts(self) -> Union[bool, list]:
-        pages: list = os.listdir(self._data_dir)
+        pages: list = [
+            file_name.split(".")[0] for file_name in os.listdir(self._data_dir)
+        ]
         pages_to_update: list = list(
-            filter(lambda page: page.split(".")[0] not in self._existing_pages, pages)
+            filter(lambda page: page not in self._existing_pages, pages)
         )
 
         return len(pages_to_update) != 0, pages_to_update
@@ -45,6 +47,14 @@ class RefreshBlog:
             f"{self._assets_path['data_destination_path']}/{file_name}",
         ]
         subprocess.run(create_post_command, check=True)
+
+        with open(
+            os.path.join(os.path.dirname(__file__), "created_pages.txt"),
+            "w",
+            encoding="utf-8",
+        ) as created_pages_file:
+            created_pages_file.write(page)
+
         self.create_post_preview(page)
 
     def create_post_preview(self, page: str):

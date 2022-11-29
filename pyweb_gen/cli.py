@@ -10,7 +10,6 @@ from .utils import Parser
 class CLIHandler:
     def __init__(self) -> None:
         args: argparse.Namespace = Parser().parse()
-        print(args)
         command: str = args.command
 
         if command == "init":

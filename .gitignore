@@ -3,3 +3,4 @@ dist/
 pyweb_gen.egg-info/
 venv/
 main.py
+*/__pycache__
