@@ -1,4 +1,4 @@
-"""Entry point behavior: version output, usage errors, installed console script."""
+"""Entry point behavior: version output, usage errors, feedback, installed script."""
 
 import subprocess
 import sys
@@ -43,3 +43,56 @@ def test_installed_console_script_prints_version() -> None:
 
     assert result.returncode == 0
     assert "pyweb-gen" in result.stdout
+
+
+def test_main_reports_scaffold_location(
+    tmp_path: Path, capsys: pytest.CaptureFixture[str], monkeypatch: pytest.MonkeyPatch
+) -> None:
+    monkeypatch.chdir(tmp_path)
+
+    status = main(["init"])
+
+    assert status == 0
+    assert str(tmp_path) in capsys.readouterr().out
+
+
+def test_main_reports_created_post(
+    tmp_path: Path, capsys: pytest.CaptureFixture[str], monkeypatch: pytest.MonkeyPatch
+) -> None:
+    monkeypatch.chdir(tmp_path)
+    main(["init"])
+    capsys.readouterr()
+
+    status = main(["new-post", "--title", "Hello There"])
+
+    assert status == 0
+    assert "hello_there.md" in capsys.readouterr().out
+
+
+def test_main_reports_refresh_summary(
+    tmp_path: Path, capsys: pytest.CaptureFixture[str], monkeypatch: pytest.MonkeyPatch
+) -> None:
+    monkeypatch.chdir(tmp_path)
+    main(["init"])
+    (tmp_path / "data" / "a_post.md").write_text(
+        "---\ntitle: A post\ndate: 2026-09-07\nid: a_post\n---\n\nbody\n",
+        encoding="utf-8",
+    )
+    capsys.readouterr()
+
+    status = main(["refresh"])
+
+    assert status == 0
+    assert "a_post" in capsys.readouterr().out
+
+
+def test_main_returns_one_with_message_on_error(
+    tmp_path: Path, capsys: pytest.CaptureFixture[str], monkeypatch: pytest.MonkeyPatch
+) -> None:
+    monkeypatch.chdir(tmp_path)
+
+    status = main(["new-post", "--title", "No blog here"])
+
+    output = capsys.readouterr()
+    assert status == 1
+    assert "data" in output.err
