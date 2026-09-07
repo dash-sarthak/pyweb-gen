@@ -1,11 +1,10 @@
 """Post rendering: front matter parsing, markdown rendering, template output."""
 
-import shutil
-from importlib.resources import as_file, files
 from pathlib import Path
 
 import pytest
 
+from pyweb_gen.initialize import initialize
 from pyweb_gen.rendering import (
     BlogLayout,
     PostSource,
@@ -13,11 +12,6 @@ from pyweb_gen.rendering import (
     render_home,
     render_post,
 )
-
-
-def _copy_templates(destination: Path) -> None:
-    with as_file(files("pyweb_gen.scaffold")) as scaffold:
-        shutil.copytree(scaffold / "templates", destination)
 
 
 def _post_without_image(**overrides: str) -> PostSource:
@@ -70,7 +64,7 @@ def test_load_post_without_title_raises(tmp_path: Path) -> None:
 
 
 def test_render_post_escapes_title_and_renders_markdown(tmp_path: Path) -> None:
-    _copy_templates(tmp_path / "templates")
+    initialize(tmp_path)
     post = _post_without_image(
         title="Bold <b> & breaking", body_markdown="hello **world**"
     )
@@ -82,7 +76,7 @@ def test_render_post_escapes_title_and_renders_markdown(tmp_path: Path) -> None:
 
 
 def test_render_post_includes_image_only_when_set(tmp_path: Path) -> None:
-    _copy_templates(tmp_path / "templates")
+    initialize(tmp_path)
 
     without_image = render_post(_post_without_image(), BlogLayout.from_root(tmp_path))
     with_image = render_post(
@@ -94,7 +88,7 @@ def test_render_post_includes_image_only_when_set(tmp_path: Path) -> None:
 
 
 def test_render_post_formats_iso_date_for_display(tmp_path: Path) -> None:
-    _copy_templates(tmp_path / "templates")
+    initialize(tmp_path)
 
     html = render_post(_post_without_image(), BlogLayout.from_root(tmp_path))
 
@@ -102,7 +96,7 @@ def test_render_post_formats_iso_date_for_display(tmp_path: Path) -> None:
 
 
 def test_render_post_keeps_non_iso_date_verbatim(tmp_path: Path) -> None:
-    _copy_templates(tmp_path / "templates")
+    initialize(tmp_path)
     post = _post_without_image(date="some old date")
 
     html = render_post(post, BlogLayout.from_root(tmp_path))
@@ -111,7 +105,7 @@ def test_render_post_keeps_non_iso_date_verbatim(tmp_path: Path) -> None:
 
 
 def test_render_home_lists_posts_newest_first(tmp_path: Path) -> None:
-    _copy_templates(tmp_path / "templates")
+    initialize(tmp_path)
     older = _post_without_image(id="older", title="Older", date="2026-01-01")
     newer = _post_without_image(id="newer", title="Newer", date="2026-09-07")
 
@@ -123,7 +117,7 @@ def test_render_home_lists_posts_newest_first(tmp_path: Path) -> None:
 
 
 def test_render_home_with_no_posts_renders_empty_page(tmp_path: Path) -> None:
-    _copy_templates(tmp_path / "templates")
+    initialize(tmp_path)
 
     html = render_home([], BlogLayout.from_root(tmp_path))
 
