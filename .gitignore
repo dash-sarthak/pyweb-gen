@@ -1,6 +1,18 @@
+# Cross-cutting
+.DS_Store
+.env
+.env.*
+*.log
+# Python
+__pycache__/
+*.pyc
+.venv/
+.pytest_cache/
+.ruff_cache/
+
+# Project
 build/
 dist/
 pyweb_gen.egg-info/
 venv/
 main.py
-*/__pycache__
