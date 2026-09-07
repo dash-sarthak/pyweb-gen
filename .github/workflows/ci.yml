@@ -22,3 +22,16 @@ jobs:
       - run: ruff format --check pyweb_gen tests
       - run: python -m pytest
       - run: python -m mypy pyweb_gen
+
+  ci:
+    needs: test
+    if: always()
+    runs-on: ubuntu-latest
+    steps:
+      - name: Fail if any matrix leg failed
+        run: |
+          result='${{ needs.test.result }}'
+          if [ "$result" != "success" ]; then
+            echo "matrix result: $result"
+            exit 1
+          fi
