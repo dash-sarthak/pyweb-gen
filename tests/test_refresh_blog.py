@@ -33,6 +33,22 @@ def test_refresh_renders_new_posts_and_rebuilds_home(tmp_path: Path) -> None:
     assert "pages/a_post.html" in index
 
 
+def test_refresh_rerenders_edited_post(tmp_path: Path) -> None:
+    root = _make_blog(tmp_path)
+    _write_post(root, "a_post", "A post", "2026-09-07")
+    refresh_blog(root)
+    (root / "data" / "a_post.md").write_text(
+        "---\ntitle: A post\ndate: 2026-09-07\nid: a_post\n---\n\nedited **body**\n",
+        encoding="utf-8",
+    )
+
+    rendered = refresh_blog(root)
+
+    assert rendered == ["a_post"]
+    page = (root / "pages" / "a_post.html").read_text(encoding="utf-8")
+    assert "edited" in page
+
+
 def test_refresh_without_new_posts_changes_nothing(tmp_path: Path) -> None:
     root = _make_blog(tmp_path)
     _write_post(root, "a_post", "A post", "2026-09-07")
