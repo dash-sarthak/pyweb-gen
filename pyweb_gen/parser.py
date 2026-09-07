@@ -37,5 +37,14 @@ def build_parser() -> ArgumentParser:
     )
 
     commands.add_parser("refresh", help="Render new posts and rebuild the home page")
+    serve = commands.add_parser(
+        "serve", help="Preview the built blog on a local web server"
+    )
+    serve.add_argument(
+        "--port",
+        type=int,
+        default=8000,
+        help="Port to serve on (default: 8000)",
+    )
 
     return parser

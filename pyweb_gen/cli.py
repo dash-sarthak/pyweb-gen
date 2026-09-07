@@ -8,6 +8,7 @@ from pyweb_gen.create_new_post import PostInput, create_post
 from pyweb_gen.initialize import initialize
 from pyweb_gen.parser import build_parser
 from pyweb_gen.refresh_blog import refresh_blog
+from pyweb_gen.server import serve_blog
 
 
 def main(argv: Sequence[str] | None = None) -> None:
@@ -28,3 +29,5 @@ def main(argv: Sequence[str] | None = None) -> None:
         )
     elif args.command == "refresh":
         refresh_blog(Path.cwd())
+    elif args.command == "serve":
+        serve_blog(Path.cwd(), port=args.port)
