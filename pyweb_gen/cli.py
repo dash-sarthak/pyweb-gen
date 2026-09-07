@@ -1,6 +1,7 @@
 """Command line entry point for pyweb-gen."""
 
 from collections.abc import Sequence
+from pathlib import Path
 
 from pyweb_gen.create_new_post import NewPost
 from pyweb_gen.initialize import initialize
@@ -13,7 +14,7 @@ def main(argv: Sequence[str] | None = None) -> None:
     args = build_parser().parse_args(argv)
 
     if args.command == "init":
-        initialize()
+        initialize(Path.cwd())
     elif args.command == "new-post":
         NewPost(title=args.title, description=args.description, image_path=args.image)
     elif args.command == "refresh":

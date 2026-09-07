@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../styles/index.css">
+    <link rel="icon" type="image/x-icon" href="../assets/favicon.svg">
+
+    <title>Quill | Home</title>
+</head>
+
+<body>
+    <nav class="navbar">
+        <div class="left_nav">
+            <img src="../assets/icon.svg" alt="site icon">
+            <h2>Quill</h2>
+        </div>
+        <div class="right_nav">
+            <a href="../index.html">Home</a>
+            <button>Subscribe</button>
+        </div>
+    </nav>
+    <div class="posts">
+        <div class="post_preview" onclick="location.href='pages/$id$.html';" style="cursor: pointer;">
+            <img src="$img$" alt="">
+            <div class="title_description">
+                <header id="title-block-header">
+                    <h1 class="title">$title$</h1>
+                    <p class="date">$date$</p>
+                </header>
+                <p>$description$</p>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>

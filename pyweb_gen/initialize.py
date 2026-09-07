@@ -1,18 +1,22 @@
-import os
+"""Blog scaffolding from packaged assets."""
 
-from .utils import download_from_git
+import shutil
+from importlib.resources import as_file, files
+from pathlib import Path
+
+SCAFFOLD_TARGETS = ("index.html", "templates", "styles", "assets", "data", "pages")
 
 
-def initialize():
-    print("\n\t\tSetting up the directory")
-    print("\t\tLoading assets")
+def initialize(root: Path) -> None:
+    """Copy the packaged blog scaffold into root."""
+    present = [target for target in SCAFFOLD_TARGETS if (root / target).exists()]
+    if present:
+        raise FileExistsError(
+            f"refusing to scaffold into {root}: {present[0]} already exists"
+        )
 
-    download_path: str = os.path.join(os.getcwd(), "blog")
-    download_from_git("dash-sarthak", "pyweb-gen", "assets", download_path)
+    with as_file(files("pyweb_gen.scaffold")) as scaffold:
+        shutil.copytree(scaffold, root, dirs_exist_ok=True)
 
-    print("\t\tCleaning up the directory")
-    to_remove = [".git", ".gitignore", "data/._", "pages/._"]
-
-    _ = [os.system(f"rm -rf {os.path.join(download_path, i)}") for i in to_remove]
-
-    print("\t\tYour blog has been set up\n\n")
+    (root / "data").mkdir()
+    (root / "pages").mkdir()

@@ -1,0 +1,179 @@
+:root {
+    --bg-primary-color: rgb(237, 237, 237);
+    --bg-secondary-color: rgb(227, 227, 227);
+    --button-text-color: rgb(237, 237, 237);
+    --font-color: rgb(55, 55, 55);
+    --accent-color: rgb(55, 55, 55);
+    --highlight-color: rgb(32, 32, 32);
+    --shadow-color: rgb(32, 32, 32);
+}
+
+@media (prefers-color-scheme: dark) {
+     :root {
+        --bg-primary-color: rgb(32, 32, 32);
+        --bg-secondary-color: rgb(29, 29, 29);
+        --button-text-color: rgb(219, 219, 219);
+        --font-color: rgb(219, 219, 219);
+        --accent-color: rgb(41, 46, 51);
+        --highlight-color: rgb(73, 82, 89);
+        --shadow-color: rgb(32, 32, 32);
+    }
+}
+
+@import url('https://fonts.googleapis.com/css2?family=Scheherazade+New:wght@400;700&display=swap');
+* {
+    margin: 0;
+    padding: 0;
+    font-family: 'Scheherazade New', serif;
+    color: var(--font-color);
+}
+
+
+/* Body and Background */
+
+body {
+    background-color: var(--bg-primary-color);
+}
+
+a {
+    text-decoration: none;
+}
+
+
+/* Navigation Bar */
+
+nav {
+    width: 100%;
+    box-shadow: 0 8px 24px -2px rgba(0, 0, 0, .2);
+    background-color: var(--bg-primary-color);
+    padding: 1.2rem 0;
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+}
+
+h2 {
+    font-size: 2rem;
+    font-weight: 400;
+}
+
+.left_nav,
+.right_nav {
+    display: flex;
+    align-items: center;
+}
+
+.left_nav * {
+    margin: 0.5rem 1rem;
+}
+
+.left_nav>img {
+    width: 1.7rem;
+    height: auto;
+}
+
+.right_nav * {
+    margin: 0.5rem 1rem;
+    font-size: 1.2rem;
+}
+
+.right_nav>button {
+    font-family: 'Scheherazade New';
+    padding: 1rem 1.2rem;
+    font-size: 1rem;
+    font-weight: 700;
+    cursor: pointer;
+    background-color: var(--accent-color);
+    color: var(--button-text-color);
+    outline: none;
+    border: none;
+    border-radius: 0.7rem;
+    transition: all 0.3s ease-in-out;
+}
+
+.right_nav>button:hover {
+    background-color: var(--highlight-color);
+    color: var(--button-text-color);
+}
+
+
+/* Content */
+
+h1 {
+    font-size: 1.8rem;
+}
+
+.date {
+    margin: 0.8rem 0 2rem 0;
+    font-size: 1rem;
+    font-weight: 700;
+}
+
+.posts {
+    align-items: center;
+    margin: 4rem 2rem;
+    display: flex;
+    flex-direction: column;
+}
+
+.post_preview {
+    display: flex;
+    flex-direction: row;
+    margin: 1.2rem;
+    padding: 1rem;
+    width: 54%;
+    gap: 2.3rem;
+    background-color: var(--bg-secondary-color);
+    padding: 2rem 2rem;
+    height: fit-content;
+    border-radius: 1.2rem;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0);
+    transition: box-shadow 0.3s ease-in-out;
+}
+
+.post_preview:hover {
+    box-shadow: 0px 12px 27px -2px rgba(0, 0, 0, .2);
+}
+
+.post_preview>p {
+    max-width: 30rem;
+    font-size: 20px;
+    line-height: 1;
+}
+
+.post_preview>img {
+    max-width: 20rem;
+    height: auto;
+    border-radius: 1rem;
+    font-size: 0px;
+    color: var(--bg-secondary-color);
+}
+
+.title_description {
+    display: flex;
+    flex-direction: column;
+}
+
+a.full_link {
+    display: none;
+    width: max-content;
+    height: max-content;
+}
+
+@media screen and (max-width: 1490px) {
+    .post_preview {
+        justify-content: center;
+        flex-direction: column;
+        text-align: center;
+    }
+    .post_preview>img {
+        max-width: none;
+        height: auto;
+        border-radius: 1rem;
+    }
+    .post_preview>p {
+        max-width: none;
+        font-size: 20px;
+        line-height: 1;
+    }
+}

@@ -8,6 +8,7 @@ version = "1.0.0"
 description = "A minimal static blog generator"
 readme = "README.md"
 requires-python = ">=3.11"
+
 authors = [{ name = "Sarthak Dash" }]
 dependencies = [
     "beautifulsoup4==4.15.0",
@@ -15,6 +16,9 @@ dependencies = [
 
 [project.scripts]
 pyweb-gen = "pyweb_gen.cli:main"
+
+[tool.setuptools.package-data]
+pyweb_gen = ["scaffold/**/*"]
 
 [tool.setuptools.packages.find]
 include = ["pyweb_gen*"]
