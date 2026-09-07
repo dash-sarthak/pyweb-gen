@@ -22,3 +22,42 @@ Approach, as a PR sequence. Each item is one issue, one branch, one PR. Issues r
 8. ci/publish: publish workflow using PyPI trusted publishing on tag, version bumped to 2.0.0 (breaking: renderer and install model change), branch protection on main with CI as the required check.
 
 Verification. Every PR runs `ruff check .` and the full pytest suite. After item 7, a smoke run in a temp directory exercises init, new-post, refresh, and serve end to end. A built wheel installed into a fresh venv repeats the flow before the publish workflow is enabled.
+
+## 2026-09-07 — Modernization executed: outcome and deviations
+
+The 2026-09-07 plan above is implemented. All units landed as local commits on main
+(gh-0, pre-tracker); no remote exists yet, so the issue/branch/PR flow starts after
+push. Verification: 34 pytest tests, ruff, ruff format, and mypy --strict all green;
+wheel builds clean; a smoke run in a temp directory exercised init, new-post,
+refresh (including re-render after an edit), and serve over loopback HTTP.
+
+Deviations from the plan, in commit order:
+
+1. Scaffold and renderer units merged into one commit for a clean cutover: shipping
+   Jinja2 templates while `refresh` still shelled out to pandoc would have broken
+   the tree between commits. Same for renderer and state: pandoc and
+   beautifulsoup4 could only be removed once `refresh_blog.py` was rewritten.
+2. Refresh went one step beyond the existence diff the plan described: a page
+   re-renders when its rendered output differs from the stored file, so editing a
+   post and refreshing updates the site. Pure existence diffing would have kept the
+   v1 gotcha where edits never appear.
+3. Unit 5 (determinism and hygiene) dissolved into the rewrites rather than being a
+   separate pass: injected clock at the composition edge (`datetime.now(UTC).date()`
+   in `cli.py` only), pathlib throughout, no `os.system`, no `sys.exit` in library
+   code, type-annotated under mypy strict.
+4. The `main()` CLI returns a status code instead of raising; the pip console
+   wrapper converts it to an exit code. Errors print one `error: ...` line to
+   stderr and exit 1.
+5. CI gained a mypy step and the publish workflow uses PyPI trusted publishing
+   (`environment: pypi`, id-token write); the PyPI side of trusted publishing still
+   needs a one-time setup by the repo owner after the remote exists.
+
+Dependency changes and reasons: added `jinja2==3.1.6` (templating),
+`markdown-it-py==4.2.0` (CommonMark rendering), `python-frontmatter==1.3.0` (YAML
+front matter); removed `beautifulsoup4` (its only job was splicing HTML at line 26
+of index.html, replaced by template rendering) and dropped the pandoc binary
+dependency. `requirements-dev.txt` pins build, mypy, pytest, ruff.
+
+Remaining before release: create the GitHub remote, push, open issues for follow-up
+work, enable branch protection with `ci` as the required check, and configure the
+PyPI trusted publisher once, then tag v2.0.0.
