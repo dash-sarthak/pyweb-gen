@@ -4,22 +4,25 @@ Updated at session close per AGENTS.md. Facts only; history lives in git log, ba
 
 ## Repo and location
 
-pyweb-gen. Remote: none yet — add `origin`, then enable branch protection (required status check `ci`, pull requests required, merge commits, no squash) before the first PR.
+pyweb-gen. Remote: github.com/dash-sarthak/pyweb-gen (ssh). Branch protection on main: required check `ci` (strict), pull requests required, no force pushes. Repo settings: merge commits only, squash and rebase disabled, branch deleted on merge.
 
 ## Last merged
 
-Nothing yet (no remote). Modernization landed as eight gh-0 commits on local main, all checks green.
+chore/1 — first PR after modernization; main holds eight gh-0 commits (packaging, pure-Python renderer, project-local state, serve command, publish workflow) plus this state update.
 
 ## In flight
 
-Nothing uncommitted. Post-remote follow-ups: open issues, configure the PyPI trusted publisher, tag v2.0.0.
+Nothing unmerged.
 
 ## Open questions for the user
 
-Which GitHub repository to use as `origin`.
+(none)
 
 ## Next action
 
-1. Create the GitHub repo and add it as `origin`, push main.
-2. Open issues for follow-up work, enable branch protection with `ci` as the required check.
-3. Configure the PyPI trusted publisher on the `pypi` environment, then tag v2.0.0 to publish.
+1. Configure the PyPI trusted publisher (issue #1): add dash-sarthak/pyweb-gen, workflow publish.yml, environment pypi.
+2. Tag v2.0.0 to publish (issue #2), then verify pypi.org/project/pyweb-gen/.
+
+## Tracker
+
+Issues #1 and #2 track the release steps.
