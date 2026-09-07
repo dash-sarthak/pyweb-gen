@@ -15,7 +15,7 @@ From PyPI once published:
 
 From source:
 
-    git clone <this repository> && cd pyweb-gen
+    git clone https://github.com/dash-sarthak/pyweb-gen.git && cd pyweb-gen
     pip install .
 
 ## Usage
