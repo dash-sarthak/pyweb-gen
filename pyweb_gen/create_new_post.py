@@ -1,10 +1,10 @@
-from datetime import datetime
 import os
+from datetime import datetime
 
 
 class NewPost:
     def __init__(
-        self, title: str, description: str = None, image_path: str = None
+        self, title: str, description: str | None = None, image_path: str | None = None
     ) -> None:
         self._title: str = title
         self._description: str = "" if description is None else description

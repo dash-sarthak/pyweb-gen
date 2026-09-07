@@ -1,63 +1,41 @@
-import argparse
-import sys
+"""Argument parser for the pyweb-gen command line interface."""
+
+from argparse import ArgumentParser
+from importlib.metadata import PackageNotFoundError, version
+
+PROG = "pyweb-gen"
 
 
-class Parser:
-    def __init__(self) -> None:
-        self._parent_parser = argparse.ArgumentParser(
-            prog="pyweb-gen",
-            usage="%(prog)s [command] [arguments]",
-            description="Creates a minimal blog from markdown files",
-        )
-        self._command_sub_parsers = self._parent_parser.add_subparsers(
-            title="command", dest="command", required=True
-        )
-        self._init_command()
-        self._new_post_command()
-        self._refresh_command()
+def package_version() -> str:
+    try:
+        return version("pyweb-gen")
+    except PackageNotFoundError:
+        return "unknown"
 
-    def _init_command(self):
-        _ = self._command_sub_parsers.add_parser("init", usage="pyweb-gen init")
 
-    def _new_post_command(self):
-        new_post_command = self._command_sub_parsers.add_parser(
-            "new-post", usage="pyweb-gen new-post [--title / --description / --image]"
-        )
+def build_parser() -> ArgumentParser:
+    parser = ArgumentParser(
+        prog=PROG,
+        description="Creates a minimal blog from markdown files",
+    )
+    parser.add_argument(
+        "--version",
+        action="version",
+        version=f"%(prog)s {package_version()}",
+    )
+    commands = parser.add_subparsers(title="command", dest="command", required=True)
 
-        new_post_command.add_argument(
-            "--title",
-            "-t",
-            nargs="?",
-            required=True,
-            type=str,
-            help="Title of the new post",
-        )
+    commands.add_parser("init", help="Scaffold a new blog in the current directory")
 
-        new_post_command.add_argument(
-            "--description",
-            "-d",
-            nargs="?",
-            required=False,
-            type=str,
-            help="Description of the post",
-        )
+    new_post = commands.add_parser("new-post", help="Create a new post")
+    new_post.add_argument("--title", "-t", required=True, help="Title of the new post")
+    new_post.add_argument(
+        "--description", "-d", default=None, help="Description of the post"
+    )
+    new_post.add_argument(
+        "--image", "-i", default=None, help="Path of any image associated with the post"
+    )
 
-        new_post_command.add_argument(
-            "--image",
-            "-i",
-            nargs="?",
-            required=False,
-            type=str,
-            help="Path of any image associated with the post",
-        )
+    commands.add_parser("refresh", help="Render new posts and rebuild the home page")
 
-    def _refresh_command(self):
-        _ = self._command_sub_parsers.add_parser("refresh", usage="pyweb-gen refresh")
-
-    def parse(self) -> argparse.Namespace:
-        try:
-            args = self._parent_parser.parse_args()
-            return args
-        except argparse.ArgumentError:
-            print("Error while parsing arguments")
-            sys.exit(-1)
+    return parser

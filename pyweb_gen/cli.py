@@ -1,24 +1,20 @@
-import argparse
+"""Command line entry point for pyweb-gen."""
 
-from .create_new_post import NewPost
-from .initialize import initialize
-from .refresh_blog import RefreshBlog
+from collections.abc import Sequence
 
-from .utils import Parser
+from pyweb_gen.create_new_post import NewPost
+from pyweb_gen.initialize import initialize
+from pyweb_gen.refresh_blog import RefreshBlog
+from pyweb_gen.utils.parser import build_parser
 
 
-class CLIHandler:
-    def __init__(self) -> None:
-        args: argparse.Namespace = Parser().parse()
-        command: str = args.command
+def main(argv: Sequence[str] | None = None) -> None:
+    """Dispatch one command."""
+    args = build_parser().parse_args(argv)
 
-        if command == "init":
-            initialize()
-        elif command == "new-post":
-            title: str = args.title
-            description: str = args.description
-            image: str = args.image
-
-            NewPost(title=title, description=description, image_path=image)
-        elif command == "refresh":
-            RefreshBlog()
+    if args.command == "init":
+        initialize()
+    elif args.command == "new-post":
+        NewPost(title=args.title, description=args.description, image_path=args.image)
+    elif args.command == "refresh":
+        RefreshBlog()

@@ -1,1 +1,1 @@
-from .cli import CLIHandler
+"""pyweb-gen, a minimal static blog generator."""

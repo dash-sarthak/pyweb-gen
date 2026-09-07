@@ -1,12 +1,10 @@
 import os
 import subprocess
 import sys
-from typing import Union
 
 from bs4 import BeautifulSoup
 
-from .utils import get_existing_pages
-from .utils import get_assets_path
+from .utils import get_assets_path, get_existing_pages
 
 
 class RefreshBlog:
@@ -21,7 +19,7 @@ class RefreshBlog:
             for page in new_pages:
                 self.create_new_page(page)
 
-    def _check_for_new_posts(self) -> Union[bool, list]:
+    def _check_for_new_posts(self) -> tuple[bool, list[str]]:
         pages: list = [
             file_name.split(".")[0] for file_name in os.listdir(self._data_dir)
         ]
