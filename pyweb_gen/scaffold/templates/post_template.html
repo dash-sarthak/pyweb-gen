@@ -8,7 +8,7 @@
     <link rel="stylesheet" href="../styles/post.css">
     <link rel="icon" type="image/x-icon" href="../assets/favicon.svg">
 
-    <title>Quill | $title$</title>
+    <title>Quill | {{ title }}</title>
 </head>
 
 <body>
@@ -26,10 +26,13 @@
     <div class="posts">
         <div class="post_preview">
             <header id="title-block-header">
-                <h1 class="title">$title$</h1>
-                <p class="date">Sarthak Dash, $date$</p>
+                <h1 class="title">{{ title }}</h1>
+                <p class="date">{{ author }}, {{ date_display }}</p>
             </header>
-            <img src="$img$" alt=""> $body$
+            {% if image_path %}
+            <img src="{{ image_path }}" alt="">
+            {% endif %}
+            {{ body }}
         </div>
     </div>
 </body>

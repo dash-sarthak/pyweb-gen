@@ -23,16 +23,20 @@
         </div>
     </nav>
     <div class="posts">
-        <div class="post_preview" onclick="location.href='pages/$id$.html';" style="cursor: pointer;">
-            <img src="$img$" alt="">
+        {% for post in posts %}
+        <div class="post_preview" onclick="location.href='pages/{{ post.id }}.html';" style="cursor: pointer;">
+            {% if post.image_path %}
+            <img src="{{ post.image_path }}" alt="">
+            {% endif %}
             <div class="title_description">
                 <header id="title-block-header">
-                    <h1 class="title">$title$</h1>
-                    <p class="date">$date$</p>
+                    <h1 class="title">{{ post.title }}</h1>
+                    <p class="date">{{ post.date_display }}</p>
                 </header>
-                <p>$description$</p>
+                <p>{{ post.description }}</p>
             </div>
         </div>
+        {% endfor %}
     </div>
 </body>
 

@@ -1,39 +1,54 @@
-import os
-from datetime import datetime
+"""Create markdown post files from post input."""
+
+import json
+import re
+from dataclasses import dataclass
+from datetime import date
+from pathlib import Path
+
+from pyweb_gen.rendering import DEFAULT_AUTHOR
+
+_SLUG_SEPARATOR = re.compile(r"[^a-z0-9]+")
 
 
-class NewPost:
-    def __init__(
-        self, title: str, description: str | None = None, image_path: str | None = None
-    ) -> None:
-        self._title: str = title
-        self._description: str = "" if description is None else description
+@dataclass(frozen=True)
+class PostInput:
+    title: str
+    description: str = ""
+    image_path: str = ""
 
-        # TODO: Option to specify and store author name during initialisation
-        self._author: str = "Sarthak Dash"
-        self._date: str = str(datetime.now().date().strftime("%d %B, %Y"))
-        self._image_path: str = "" if image_path is None else image_path
-        self._id: str = self.create_post_id()
 
-        self.create_post_file()
+def _slugify(title: str) -> str:
+    slug = _SLUG_SEPARATOR.sub("_", title.lower()).strip("_")
+    if not slug:
+        raise ValueError(f"title has no word characters: {title!r}")
+    return slug
 
-    def create_post_file(self):
-        markdown_metadata_specifier: str = "-" * 3
-        file_content = [
-            markdown_metadata_specifier,
-            f"title: {self._title}",
-            f"description: {self._description}",
-            f"author: {self._author}",
-            f"date: {self._date}",
-            f"id: {self._id}",
-            f"img: {self._image_path}",
-            markdown_metadata_specifier,
-        ]
-        with open(
-            os.path.join(os.getcwd(), "data", f"{self._id}.md"), "w", encoding="utf-8"
-        ) as md_file:
-            md_file.write("\n".join(file_content))
-            md_file.write("\n")
 
-    def create_post_id(self) -> str:
-        return "_".join([i.lower() for i in self._title.split(" ")])
+def _front_matter(post: PostInput, post_id: str, today: date) -> str:
+    fields = [
+        ("title", post.title),
+        ("description", post.description),
+        ("author", DEFAULT_AUTHOR),
+        ("date", today.isoformat()),
+        ("id", post_id),
+        ("img", post.image_path),
+    ]
+    lines = ["---"]
+    lines.extend(f"{name}: {json.dumps(value)}" for name, value in fields)
+    lines.append("---")
+    return "\n".join(lines)
+
+
+def create_post(post: PostInput, data_dir: Path, today: date) -> Path:
+    """Write one markdown post with front matter; returns its path."""
+    if not data_dir.is_dir():
+        raise FileNotFoundError(f"blog data directory does not exist: {data_dir}")
+
+    post_id = _slugify(post.title)
+    target = data_dir / f"{post_id}.md"
+    if target.exists():
+        raise FileExistsError(f"post already exists: {target}")
+
+    target.write_text(f"{_front_matter(post, post_id, today)}\n", encoding="utf-8")
+    return target

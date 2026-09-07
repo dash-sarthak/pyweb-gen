@@ -11,7 +11,9 @@ requires-python = ">=3.11"
 
 authors = [{ name = "Sarthak Dash" }]
 dependencies = [
-    "beautifulsoup4==4.15.0",
+    "jinja2==3.1.6",
+    "markdown-it-py==4.2.0",
+    "python-frontmatter==1.3.0",
 ]
 
 [project.scripts]
@@ -31,7 +33,7 @@ python_version = "3.11"
 strict = true
 
 [[tool.mypy.overrides]]
-module = ["bs4"]
+module = ["frontmatter", "markdown_it"]
 ignore_missing_imports = true
 
 [tool.ruff]
