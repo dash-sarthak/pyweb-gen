@@ -21,3 +21,4 @@ jobs:
       - run: ruff check .
       - run: ruff format --check pyweb_gen tests
       - run: python -m pytest
+      - run: python -m mypy pyweb_gen
