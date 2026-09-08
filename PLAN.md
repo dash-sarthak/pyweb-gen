@@ -4,6 +4,16 @@ Dated planning entries, newest first. One `## YYYY-MM-DD` heading per planning s
 
 ## Entries
 
+## 2026-09-08 — Site naming, skeuomorphic restyle, demo blog
+
+Goal. The scaffold hardcodes the blog name "Quill" in six places, so users cannot name their blog. The user wants a naming mechanism (default "Blog"), a cleaner look with a slight skeuomorphic design, and a dummy blog with tech posts about the tool to exercise it all.
+
+Decisions. The name lives in `blog.yaml` at the blog root (`name: Blog`), written by `init` (with an `--name` flag) and read by `refresh`; templates render `site_name` from it. Parsing uses PyYAML, promoted from transitive to declared dependency since the config reads it directly. The restyle is CSS-only: the Google Fonts import goes away for a system serif stack, and the shared nav/paper rules move into one `base.css` instead of being duplicated across the two stylesheets. The demo blog lives in gitignored `demo/`.
+
+Approach. One issue, one branch, one PR: config mechanism with boundary tests first, then template and CSS rework, then demo content.
+
+Verification. pytest, ruff, ruff format, and strict mypy green; demo site built with the new scaffold and inspected in a real browser (home and post screenshots); full wheel build before opening the PR; CI green before merge.
+
 ## 2026-09-07 — Modernization: pure-Python rendering, PyPI, tests, CI
 
 Goal. Bring this 2022 codebase up to the standards the repo's own manual sets: installable from PyPI, no external pandoc binary, user state kept in the blog project instead of site-packages, a real test suite, CI that can actually pass, and tagged releases.

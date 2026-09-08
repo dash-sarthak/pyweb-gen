@@ -1,4 +1,4 @@
-"""Blog scaffolding: init copies the packaged Quill scaffold into the target directory."""
+"""Blog scaffolding: init copies the packaged scaffold and writes the site config."""
 
 from pathlib import Path
 
@@ -10,6 +10,7 @@ SCAFFOLD_FILES = [
     "templates/post_template.html",
     "templates/home_template.html",
     "styles/index.css",
+    "styles/base.css",
     "styles/post.css",
     "assets/favicon.svg",
     "assets/icon.svg",
@@ -45,3 +46,28 @@ def test_init_allows_directory_with_unrelated_files(tmp_path: Path) -> None:
 
     assert (tmp_path / "index.html").is_file()
     assert (tmp_path / "notes.txt").read_text(encoding="utf-8") == "scratch"
+
+
+def test_init_writes_default_site_name(tmp_path: Path) -> None:
+    initialize(tmp_path)
+
+    config = (tmp_path / "blog.yaml").read_text(encoding="utf-8")
+
+    assert "name: Blog" in config
+
+
+def test_init_writes_custom_site_name(tmp_path: Path) -> None:
+    initialize(tmp_path, name="Inkwell")
+
+    config = (tmp_path / "blog.yaml").read_text(encoding="utf-8")
+
+    assert "name: Inkwell" in config
+
+
+def test_init_refuses_when_only_config_exists(tmp_path: Path) -> None:
+    (tmp_path / "blog.yaml").write_text("name: Blog\n", encoding="utf-8")
+
+    with pytest.raises(FileExistsError):
+        initialize(tmp_path)
+
+    assert (tmp_path / "blog.yaml").read_text(encoding="utf-8") == "name: Blog\n"

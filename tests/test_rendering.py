@@ -1,4 +1,4 @@
-"""Post rendering: front matter parsing, markdown rendering, template output."""
+"""Rendering tests: front matter, site config, markdown, template output."""
 
 from pathlib import Path
 
@@ -8,7 +8,9 @@ from pyweb_gen.initialize import initialize
 from pyweb_gen.rendering import (
     BlogLayout,
     PostSource,
+    SiteConfig,
     load_post,
+    load_site_config,
     render_home,
     render_post,
 )
@@ -69,7 +71,7 @@ def test_render_post_escapes_title_and_renders_markdown(tmp_path: Path) -> None:
         title="Bold <b> & breaking", body_markdown="hello **world**"
     )
 
-    html = render_post(post, BlogLayout.from_root(tmp_path))
+    html = render_post(post, BlogLayout.from_root(tmp_path), SiteConfig())
 
     assert "Bold &lt;b&gt; &amp; breaking" in html
     assert "<strong>world</strong>" in html
@@ -81,7 +83,7 @@ def test_render_post_escapes_raw_html_in_body(tmp_path: Path) -> None:
         title="Raw HTML", body_markdown="hello **world** <img src=x onerror=alert(2)>"
     )
 
-    html = render_post(post, BlogLayout.from_root(tmp_path))
+    html = render_post(post, BlogLayout.from_root(tmp_path), SiteConfig())
 
     assert "&lt;img src=x onerror=alert(2)&gt;" in html
     assert "<img src=x onerror" not in html
@@ -90,9 +92,13 @@ def test_render_post_escapes_raw_html_in_body(tmp_path: Path) -> None:
 def test_render_post_includes_image_only_when_set(tmp_path: Path) -> None:
     initialize(tmp_path)
 
-    without_image = render_post(_post_without_image(), BlogLayout.from_root(tmp_path))
+    without_image = render_post(
+        _post_without_image(), BlogLayout.from_root(tmp_path), SiteConfig()
+    )
     with_image = render_post(
-        _post_without_image(image_path="cover.png"), BlogLayout.from_root(tmp_path)
+        _post_without_image(image_path="cover.png"),
+        BlogLayout.from_root(tmp_path),
+        SiteConfig(),
     )
 
     assert '<img src=""' not in without_image
@@ -102,7 +108,9 @@ def test_render_post_includes_image_only_when_set(tmp_path: Path) -> None:
 def test_render_post_formats_iso_date_for_display(tmp_path: Path) -> None:
     initialize(tmp_path)
 
-    html = render_post(_post_without_image(), BlogLayout.from_root(tmp_path))
+    html = render_post(
+        _post_without_image(), BlogLayout.from_root(tmp_path), SiteConfig()
+    )
 
     assert "07 September, 2026" in html
 
@@ -111,7 +119,7 @@ def test_render_post_keeps_non_iso_date_verbatim(tmp_path: Path) -> None:
     initialize(tmp_path)
     post = _post_without_image(date="some old date")
 
-    html = render_post(post, BlogLayout.from_root(tmp_path))
+    html = render_post(post, BlogLayout.from_root(tmp_path), SiteConfig())
 
     assert "some old date" in html
 
@@ -121,7 +129,7 @@ def test_render_home_lists_posts_newest_first(tmp_path: Path) -> None:
     older = _post_without_image(id="older", title="Older", date="2026-01-01")
     newer = _post_without_image(id="newer", title="Newer", date="2026-09-07")
 
-    html = render_home([older, newer], BlogLayout.from_root(tmp_path))
+    html = render_home([older, newer], BlogLayout.from_root(tmp_path), SiteConfig())
 
     assert "pages/newer.html" in html
     assert "pages/older.html" in html
@@ -131,7 +139,41 @@ def test_render_home_lists_posts_newest_first(tmp_path: Path) -> None:
 def test_render_home_with_no_posts_renders_empty_page(tmp_path: Path) -> None:
     initialize(tmp_path)
 
-    html = render_home([], BlogLayout.from_root(tmp_path))
+    html = render_home([], BlogLayout.from_root(tmp_path), SiteConfig())
 
-    assert "Quill | Home" in html
+    assert "Blog | Home" in html
     assert "post_preview" not in html
+
+
+def test_load_site_config_defaults_without_file(tmp_path: Path) -> None:
+    assert load_site_config(tmp_path) == SiteConfig()
+
+
+def test_load_site_config_reads_name(tmp_path: Path) -> None:
+    (tmp_path / "blog.yaml").write_text("name: Inkwell\n", encoding="utf-8")
+
+    assert load_site_config(tmp_path).name == "Inkwell"
+
+
+def test_load_site_config_empty_file_falls_back_to_default(tmp_path: Path) -> None:
+    (tmp_path / "blog.yaml").write_text("", encoding="utf-8")
+
+    assert load_site_config(tmp_path) == SiteConfig()
+
+
+def test_load_site_config_non_mapping_falls_back_to_default(tmp_path: Path) -> None:
+    (tmp_path / "blog.yaml").write_text("- one\n- two\n", encoding="utf-8")
+
+    assert load_site_config(tmp_path) == SiteConfig()
+
+
+def test_render_post_renders_site_name_from_config(tmp_path: Path) -> None:
+    initialize(tmp_path)
+    (tmp_path / "blog.yaml").write_text("name: Inkwell\n", encoding="utf-8")
+    post = _post_without_image(title="Titled")
+    site = load_site_config(tmp_path)
+
+    html = render_post(post, BlogLayout.from_root(tmp_path), site)
+
+    assert "<h2>Inkwell</h2>" in html
+    assert "<title>Inkwell | Titled</title>" in html

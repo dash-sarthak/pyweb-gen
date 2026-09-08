@@ -22,7 +22,7 @@ def test_server_serves_index_page_over_loopback(tmp_path: Path) -> None:
         connection.close()
 
         assert response.status == 200
-        assert "Quill | Home" in body
+        assert "Blog | Home" in body
     finally:
         server.shutdown()
         server.server_close()

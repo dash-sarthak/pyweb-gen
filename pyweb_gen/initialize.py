@@ -5,10 +5,22 @@ from importlib.resources import files
 from pathlib import Path
 from typing import TYPE_CHECKING
 
+import yaml
+
+from pyweb_gen.rendering import DEFAULT_SITE_NAME
+
 if TYPE_CHECKING:
     from importlib.abc import Traversable
 
-SCAFFOLD_TARGETS = ("index.html", "templates", "styles", "assets", "data", "pages")
+SCAFFOLD_TARGETS = (
+    "blog.yaml",
+    "index.html",
+    "templates",
+    "styles",
+    "assets",
+    "data",
+    "pages",
+)
 
 
 def _copy_tree(source: "Traversable", destination: Path) -> None:
@@ -22,8 +34,8 @@ def _copy_tree(source: "Traversable", destination: Path) -> None:
                 shutil.copyfileobj(source_file, target_file)
 
 
-def initialize(root: Path) -> None:
-    """Copy the packaged blog scaffold into root."""
+def initialize(root: Path, name: str = DEFAULT_SITE_NAME) -> None:
+    """Copy the packaged blog scaffold into root and write the site config."""
     present = [target for target in SCAFFOLD_TARGETS if (root / target).exists()]
     if present:
         raise FileExistsError(
@@ -34,3 +46,6 @@ def initialize(root: Path) -> None:
 
     (root / "data").mkdir()
     (root / "pages").mkdir()
+    (root / "blog.yaml").write_text(
+        yaml.safe_dump({"name": name}, sort_keys=False), encoding="utf-8"
+    )

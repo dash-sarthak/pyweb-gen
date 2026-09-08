@@ -21,14 +21,15 @@ From source:
 ## Usage
 
     mkdir my-blog && cd my-blog
-    pyweb-gen init
+    pyweb-gen init --name "My Blog"
     pyweb-gen new-post --title "My first post" --description "About this blog"
     pyweb-gen refresh
     pyweb-gen serve
 
-`init` scaffolds the current directory with the Quill theme: templates, styles,
-assets, an empty `data/` directory for posts, and `pages/` for rendered output.
-It refuses to overwrite an existing blog.
+`init` scaffolds the current directory with the default theme: templates,
+styles, assets, an empty `data/` directory for posts, and `pages/` for rendered
+output. It refuses to overwrite an existing blog. `--name` (or `-n`) sets the
+blog name shown in the nav and browser titles; it defaults to `Blog`.
 
 `new-post` writes a Markdown file into `data/`. Edit it with any text editor.
 
@@ -55,6 +56,14 @@ change the port.
 page ordering; other formats display verbatim and sort last. `img` is
 optional; the templates render the image only when it is set.
 
+### Site config
+
+`init` writes `blog.yaml` at the blog root:
+
+    name: My Blog
+
+Edit the name any time and run `refresh`; every page picks it up.
+
 ### Upgrading from 1.x
 
 Rendering no longer uses pandoc, and templates are Jinja2 now. Bring your old
@@ -76,4 +85,4 @@ CI runs the same checks on Python 3.11 through 3.14.
 
 Runtime dependencies, and why they exist: `jinja2` for templating,
 `markdown-it-py` for CommonMark rendering, `python-frontmatter` for YAML front
-matter parsing.
+matter parsing, `PyYAML` for the site config file.

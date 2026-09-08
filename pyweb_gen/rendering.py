@@ -5,11 +5,13 @@ from datetime import date
 from pathlib import Path
 
 import frontmatter
+import yaml
 from jinja2 import Environment, FileSystemLoader, select_autoescape
 from markdown_it import MarkdownIt
 from markupsafe import Markup
 
 DEFAULT_AUTHOR = "Sarthak Dash"
+DEFAULT_SITE_NAME = "Blog"
 
 _MONTHS = (
     "January",
@@ -28,6 +30,25 @@ _MONTHS = (
 
 # html stays off: raw HTML in posts must escape; Markup() bypasses autoescape downstream.
 _MARKDOWN = MarkdownIt(options_update={"html": False})
+
+
+@dataclass(frozen=True)
+class SiteConfig:
+    """Blog-wide settings read from blog.yaml at the blog root."""
+
+    name: str = DEFAULT_SITE_NAME
+
+
+def load_site_config(root: Path) -> SiteConfig:
+    """Read blog.yaml; a missing file or missing name falls back to the default."""
+    config_path = root / "blog.yaml"
+    if not config_path.is_file():
+        return SiteConfig()
+    data = yaml.safe_load(config_path.read_text(encoding="utf-8"))
+    if not isinstance(data, dict):
+        return SiteConfig()
+    name = str(data.get("name") or "").strip()
+    return SiteConfig(name or DEFAULT_SITE_NAME)
 
 
 @dataclass(frozen=True)
@@ -105,7 +126,7 @@ def _environment(templates_dir: Path) -> Environment:
     )
 
 
-def render_post(post: PostSource, layout: BlogLayout) -> str:
+def render_post(post: PostSource, layout: BlogLayout, site: SiteConfig) -> str:
     """Render one post through the packaged post template."""
     template = _environment(layout.templates_dir).get_template("post_template.html")
     return template.render(
@@ -114,10 +135,11 @@ def render_post(post: PostSource, layout: BlogLayout) -> str:
         date_display=post.date_display,
         image_path=post.image_path,
         body=Markup(_MARKDOWN.render(post.body_markdown)),
+        site_name=site.name,
     )
 
 
-def render_home(posts: list[PostSource], layout: BlogLayout) -> str:
+def render_home(posts: list[PostSource], layout: BlogLayout, site: SiteConfig) -> str:
     """Render the home page listing posts newest first."""
     template = _environment(layout.templates_dir).get_template("home_template.html")
-    return template.render(posts=sort_posts_newest_first(posts))
+    return template.render(posts=sort_posts_newest_first(posts), site_name=site.name)

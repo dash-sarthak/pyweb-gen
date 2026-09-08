@@ -3,29 +3,28 @@
 
 <head>
     <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../styles/base.css">
     <link rel="stylesheet" href="../styles/post.css">
     <link rel="icon" type="image/x-icon" href="../assets/favicon.svg">
 
-    <title>Quill | {{ title }}</title>
+    <title>{{ site_name }} | {{ title }}</title>
 </head>
 
 <body>
     <nav class="navbar">
         <div class="left_nav">
             <img src="../assets/icon.svg" alt="site icon">
-            <h2>Quill</h2>
+            <h2>{{ site_name }}</h2>
         </div>
         <div class="right_nav">
             <a href="../index.html">Home</a>
             <button>Subscribe</button>
         </div>
-
     </nav>
     <div class="posts">
-        <div class="post_preview">
-            <header id="title-block-header">
+        <article class="post_preview">
+            <header class="post_header">
                 <h1 class="title">{{ title }}</h1>
                 <p class="date">{{ author }}, {{ date_display }}</p>
             </header>
@@ -33,7 +32,7 @@
             <img src="{{ image_path }}" alt="">
             {% endif %}
             {{ body }}
-        </div>
+        </article>
     </div>
 </body>
 

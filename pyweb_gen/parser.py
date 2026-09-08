@@ -3,6 +3,8 @@
 from argparse import ArgumentParser
 from importlib.metadata import PackageNotFoundError, version
 
+from pyweb_gen.rendering import DEFAULT_SITE_NAME
+
 PROG = "pyweb-gen"
 
 
@@ -25,7 +27,15 @@ def build_parser() -> ArgumentParser:
     )
     commands = parser.add_subparsers(title="command", dest="command", required=True)
 
-    commands.add_parser("init", help="Scaffold a new blog in the current directory")
+    init = commands.add_parser(
+        "init", help="Scaffold a new blog in the current directory"
+    )
+    init.add_argument(
+        "--name",
+        "-n",
+        default=DEFAULT_SITE_NAME,
+        help=f"Name of the blog (default: {DEFAULT_SITE_NAME})",
+    )
 
     new_post = commands.add_parser("new-post", help="Create a new post")
     new_post.add_argument("--title", "-t", required=True, help="Title of the new post")
