@@ -8,7 +8,7 @@ pyweb-gen. Remote: github.com/dash-sarthak/pyweb-gen (ssh). Branch protection on
 
 ## Last merged
 
-chore/1 — first PR after modernization; main holds eight gh-0 commits (packaging, pure-Python renderer, project-local state, serve command, publish workflow) plus this state update.
+chore/8 — state update after the v2.0.0 release. Before it, PR #7 (gh-6: escape raw HTML in post bodies, regression test landed red first) and tag v2.0.0 published pyweb-gen to PyPI.
 
 ## In flight
 
@@ -16,13 +16,13 @@ Nothing unmerged.
 
 ## Open questions for the user
 
-(none)
+1. File the pre-flight hardening candidates as issues? (a) front-matter `id` is unvalidated, so `id: ../../x` in hand-edited front matter writes the rendered page outside `pages/`; (b) `serve` binds 0.0.0.0, so the preview is reachable from the LAN. Both author-controlled, low severity.
+2. `pyproject.toml` declares no license, so the PyPI page shows none.
 
 ## Next action
 
-1. Configure the PyPI trusted publisher (issue #1): add dash-sarthak/pyweb-gen, workflow publish.yml, environment pypi.
-2. Tag v2.0.0 to publish (issue #2), then verify pypi.org/project/pyweb-gen/.
+Release complete: pyweb-gen 2.0.0 is live at pypi.org/project/pyweb-gen/ (issue #2 closed). No scheduled work; next actions come from the open questions above.
 
 ## Tracker
 
-Issues #1 and #2 track the release steps.
+Open: none. Closed: #1 and #2 (release), #6 (raw HTML escaping), #8 (this update).
