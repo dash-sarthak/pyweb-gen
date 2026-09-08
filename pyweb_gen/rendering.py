@@ -26,7 +26,8 @@ _MONTHS = (
     "December",
 )
 
-_MARKDOWN = MarkdownIt()
+# html stays off: raw HTML in posts must escape; Markup() bypasses autoescape downstream.
+_MARKDOWN = MarkdownIt(options_update={"html": False})
 
 
 @dataclass(frozen=True)
