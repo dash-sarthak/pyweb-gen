@@ -3,39 +3,39 @@
 
 <head>
     <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="../styles/index.css">
-    <link rel="icon" type="image/x-icon" href="../assets/favicon.svg">
+    <link rel="stylesheet" href="styles/base.css">
+    <link rel="stylesheet" href="styles/index.css">
+    <link rel="icon" type="image/x-icon" href="assets/favicon.svg">
 
-    <title>Quill | Home</title>
+    <title>{{ site_name }} | Home</title>
 </head>
 
 <body>
     <nav class="navbar">
         <div class="left_nav">
-            <img src="../assets/icon.svg" alt="site icon">
-            <h2>Quill</h2>
+            <img src="assets/icon.svg" alt="site icon">
+            <h2>{{ site_name }}</h2>
         </div>
         <div class="right_nav">
-            <a href="../index.html">Home</a>
+            <a href="index.html">Home</a>
             <button>Subscribe</button>
         </div>
     </nav>
     <div class="posts">
         {% for post in posts %}
-        <div class="post_preview" onclick="location.href='pages/{{ post.id }}.html';" style="cursor: pointer;">
-            {% if post.image_path %}
-            <img src="{{ post.image_path }}" alt="">
-            {% endif %}
-            <div class="title_description">
-                <header id="title-block-header">
+        <a class="post_link" href="pages/{{ post.id }}.html">
+            <article class="post_preview">
+                {% if post.image_path %}
+                <img src="{{ post.image_path }}" alt="">
+                {% endif %}
+                <header class="post_header">
                     <h1 class="title">{{ post.title }}</h1>
                     <p class="date">{{ post.date_display }}</p>
                 </header>
-                <p>{{ post.description }}</p>
-            </div>
-        </div>
+                <p class="description">{{ post.description }}</p>
+            </article>
+        </a>
         {% endfor %}
     </div>
 </body>
