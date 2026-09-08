@@ -96,3 +96,14 @@ def test_main_returns_one_with_message_on_error(
     output = capsys.readouterr()
     assert status == 1
     assert "data" in output.err
+
+
+def test_main_init_with_name_writes_config(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    monkeypatch.chdir(tmp_path)
+
+    status = main(["init", "--name", "Inkwell"])
+
+    assert status == 0
+    assert "name: Inkwell" in (tmp_path / "blog.yaml").read_text(encoding="utf-8")

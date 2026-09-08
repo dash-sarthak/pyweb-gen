@@ -21,7 +21,7 @@ def main(argv: Sequence[str] | None = None) -> int:
 
     try:
         if args.command == "init":
-            initialize(root)
+            initialize(root, name=args.name)
             print(f"Scaffolded a new blog in {root}")
         elif args.command == "new-post":
             post = create_post(

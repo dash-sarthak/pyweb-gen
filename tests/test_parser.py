@@ -13,3 +13,15 @@ def test_serve_command_accepts_custom_port() -> None:
     args = build_parser().parse_args(["serve", "--port", "9000"])
 
     assert args.port == 9000
+
+
+def test_init_command_defaults_name_to_blog() -> None:
+    args = build_parser().parse_args(["init"])
+
+    assert args.name == "Blog"
+
+
+def test_init_command_accepts_custom_name() -> None:
+    args = build_parser().parse_args(["init", "--name", "Inkwell"])
+
+    assert args.name == "Inkwell"

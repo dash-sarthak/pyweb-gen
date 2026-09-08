@@ -94,7 +94,7 @@ def test_refresh_on_fresh_blog_renders_empty_home(tmp_path: Path) -> None:
 
     assert new_pages == []
     index = (root / "index.html").read_text(encoding="utf-8")
-    assert "Quill | Home" in index
+    assert "Blog | Home" in index
 
 
 def test_refresh_ignores_non_markdown_files(tmp_path: Path) -> None:
@@ -112,3 +112,26 @@ def test_refresh_names_file_missing_front_matter_title(tmp_path: Path) -> None:
 
     with pytest.raises(ValueError, match="broken"):
         refresh_blog(root)
+
+
+def test_refresh_writes_root_relative_asset_links(tmp_path: Path) -> None:
+    root = _make_blog(tmp_path)
+
+    refresh_blog(root)
+
+    index = (root / "index.html").read_text(encoding="utf-8")
+    assert 'href="styles/base.css"' in index
+    assert 'href="../styles/' not in index
+
+
+def test_refresh_uses_configured_blog_name(tmp_path: Path) -> None:
+    root = _make_blog(tmp_path)
+    (root / "blog.yaml").write_text("name: Inkwell\n", encoding="utf-8")
+    _write_post(root, "a_post", "A post", "2026-09-07")
+
+    refresh_blog(root)
+
+    index = (root / "index.html").read_text(encoding="utf-8")
+    page = (root / "pages" / "a_post.html").read_text(encoding="utf-8")
+    assert "Inkwell" in index
+    assert "Inkwell" in page
