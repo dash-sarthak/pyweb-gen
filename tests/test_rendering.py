@@ -75,6 +75,18 @@ def test_render_post_escapes_title_and_renders_markdown(tmp_path: Path) -> None:
     assert "<strong>world</strong>" in html
 
 
+def test_render_post_escapes_raw_html_in_body(tmp_path: Path) -> None:
+    initialize(tmp_path)
+    post = _post_without_image(
+        title="Raw HTML", body_markdown="hello **world** <img src=x onerror=alert(2)>"
+    )
+
+    html = render_post(post, BlogLayout.from_root(tmp_path))
+
+    assert "&lt;img src=x onerror=alert(2)&gt;" in html
+    assert "<img src=x onerror" not in html
+
+
 def test_render_post_includes_image_only_when_set(tmp_path: Path) -> None:
     initialize(tmp_path)
 
